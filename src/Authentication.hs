@@ -1,5 +1,8 @@
 module Authentication
-    ( areCredentialValid
+    ( areCredentialValid,
+      convertCredentialToUserCredential,
+      checkCredentialWithDatabase,
+      parseAuthorizationHeader
     ) where
 
 import Data.ByteString.Base64 as B
@@ -9,22 +12,24 @@ import Debug.Trace as T
 import StringUtils
 import UserCredential
 
-areCredentialValid :: Maybe ByteString -> Bool
-areCredentialValid maybeAuthorizationHeader = case maybeAuthorizationHeader of
+areCredentialValid :: Maybe ByteString -> [UserCredential] -> Bool
+areCredentialValid maybeAuthorizationHeader registeredUsers = case maybeAuthorizationHeader of
                                         Just authorizationHeader ->
-                                                                    checkCredentialWithDatabase $
-                                                                        parseAuthorizationHeader authorizationHeader
+                                                 checkCredentialWithDatabase
+                                                            (parseAuthorizationHeader authorizationHeader)
+                                                            registeredUsers
+
                                         Nothing -> False
 
 parseAuthorizationHeader :: ByteString -> Maybe UserCredential
 parseAuthorizationHeader authorizationHeader = do
   let basicWord = toByteString "Basic"
   case (C.words authorizationHeader) of
-    basicWord : realm : [] -> readCredential $ B.decodeLenient $ C.tail $ C.dropWhile (/= '=') realm
+    basicWord : credential : [] -> convertCredentialToUserCredential $ B.decodeLenient $ credential
     _ -> T.trace ("Invalid header format: " ++ (show authorizationHeader)) Nothing
 
-readCredential :: ByteString -> Maybe UserCredential
-readCredential credential = do
+convertCredentialToUserCredential :: ByteString -> Maybe UserCredential
+convertCredentialToUserCredential credential = do
   let splitCredential = C.span (\x -> x /= ':') credential
   let username = fst splitCredential
   let password = C.tail $ snd splitCredential
@@ -32,8 +37,8 @@ readCredential credential = do
   then Nothing
     else Just UserCredential {username= username, hashedPassword= password}
 
-checkCredentialWithDatabase :: Maybe UserCredential -> Bool
-checkCredentialWithDatabase maybeCredential =
+checkCredentialWithDatabase :: Maybe UserCredential -> [UserCredential] -> Bool
+checkCredentialWithDatabase maybeCredential registeredUsers =
   case maybeCredential of
-    Just credential -> (L.length $ L.filter (\x -> x == credential) database) > 0
+    Just credential -> (L.length $ L.filter (\x -> x == credential) registeredUsers) > 0
     Nothing -> False
