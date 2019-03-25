@@ -1,4 +1,4 @@
-module StringUtil
+module StringUtils
     ( toByteString
     ) where
 

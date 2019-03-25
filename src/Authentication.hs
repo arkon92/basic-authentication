@@ -6,7 +6,7 @@ import Data.ByteString.Base64 as B
 import Data.ByteString.Char8 as C
 import Data.List as L
 import Debug.Trace as T
-import StringUtil
+import StringUtils
 import UserCredential
 
 areCredentialValid :: Maybe ByteString -> Bool
