@@ -1,0 +1,28 @@
+name:                email
+version:             0.1.0.0
+github:              "arkon92/email"
+author:              "arkon92"
+
+
+description:         A simple Email service
+
+dependencies:
+  - base >= 4.7 && < 5
+  - happstack-server
+  - base64-bytestring
+  - bytestring
+  - HUnit
+
+library:
+  source-dirs: src
+
+executables:
+  email-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - email
