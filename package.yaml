@@ -1,10 +1,10 @@
-name:                email
+name:                basic-authentication
 version:             0.1.0.0
-github:              "arkon92/email"
+github:              "arkon92/basic-authentication"
 author:              "arkon92"
 
 
-description:         A simple Email service
+description:         A basic authentication service
 
 dependencies:
   - base >= 4.7 && < 5
@@ -17,7 +17,7 @@ library:
   source-dirs: src
 
 executables:
-  email-exe:
+  basic-authentication-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -25,10 +25,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - email
+    - basic-authentication
 
 tests:
-  email-test:
+  basic-authentication-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -36,4 +36,4 @@ tests:
       - -rtsopts
       - -with-rtsopts=-N
     dependencies:
-      - email
+      - basic-authentication
