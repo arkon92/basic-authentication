@@ -9,7 +9,6 @@ import Data.ByteString.Base64 as B
 import Data.ByteString.Char8 as C
 import Data.List as L
 import Debug.Trace as T
-import StringUtils
 import UserCredential
 
 areCredentialValid :: Maybe ByteString -> [UserCredential] -> Bool
@@ -23,7 +22,7 @@ areCredentialValid maybeAuthorizationHeader registeredUsers = case maybeAuthoriz
 
 parseAuthorizationHeader :: ByteString -> Maybe UserCredential
 parseAuthorizationHeader authorizationHeader = do
-  let basicWord = toByteString "Basic"
+  let basicWord = "Basic"
   case (C.words authorizationHeader) of
     basicWord : credential : [] -> convertCredentialToUserCredential $ B.decodeLenient $ credential
     _ -> T.trace ("Invalid header format: " ++ (show authorizationHeader)) Nothing

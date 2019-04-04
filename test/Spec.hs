@@ -1,19 +1,18 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 import Test.HUnit
-
-
 import Authentication (areCredentialValid,
                        checkCredentialWithDatabase,
                        convertCredentialToUserCredential,
                        parseAuthorizationHeader)
 import Test.HUnit
-import Data.ByteString
 import Data.Monoid
-import StringUtils
 import UserCredential
+import Data.ByteString.Char8 as C
 
 
 testUser :: UserCredential
-testUser = UserCredential (toByteString "user1") (toByteString "pwd1")
+testUser = UserCredential "user1" "pwd1"
 
 validUserSearchTest :: Assertion
 validUserSearchTest = assertEqual "validUserTest"
@@ -22,7 +21,7 @@ validUserSearchTest = assertEqual "validUserTest"
 
 
 unknownUser :: UserCredential
-unknownUser = UserCredential (toByteString "user3") (toByteString "pwd3")
+unknownUser = UserCredential "user3" "pwd3"
 
 invalidUserSearchTest :: Assertion
 invalidUserSearchTest = assertEqual "invalidUserTest"
@@ -31,7 +30,7 @@ invalidUserSearchTest = assertEqual "invalidUserTest"
 
 
 byteStringCredential :: ByteString
-byteStringCredential = toByteString "user1:pwd1"
+byteStringCredential = "user1:pwd1"
 
 convertCredentialToUserCredentialTest :: Assertion
 convertCredentialToUserCredentialTest = assertEqual "convertCredentialToUserCredential"
@@ -40,7 +39,7 @@ convertCredentialToUserCredentialTest = assertEqual "convertCredentialToUserCred
 
 
 authorizationHeaderValue :: ByteString
-authorizationHeaderValue = toByteString "Basic dXNlcjE6cHdkMQ=="
+authorizationHeaderValue = "Basic dXNlcjE6cHdkMQ=="
 
 parseAuthorizationHeaderTest :: Assertion
 parseAuthorizationHeaderTest = assertEqual "parseAuthorizationHeader"
@@ -53,7 +52,7 @@ testWithValidHeader = assertEqual "areCredentialValid"
                                                 (areCredentialValid (Just authorizationHeaderValue) database)
 
 invalidHeader :: ByteString
-invalidHeader = toByteString "Basic dXNlcdsadjE6cHdkMQ=="
+invalidHeader = "Basic dXNlcdsadjE6cHdkMQ=="
 
 testWithInvalidHeader :: Assertion
 testWithInvalidHeader = assertEqual "areCredentialValid"
